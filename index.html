@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Buddy</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Water Buddy</h1>
+    <p>Stay Focused. Stay Hydrated</p>
+  </header>
+
+  <main>
+    <section aria-labelledby="timer-heading">
+      <h2 id="timer-heading">Water break timer</h2>
+
+      <label for="mode">Choose a mode</label>
+      <select id="mode" name="mode" aria-describedby="mode-help">
+        <option value="normal" selected>Normal Mode — 30 minutes</option>
+        <option value="demo">Demo Mode — 10 seconds</option>
+      </select>
+      <p id="mode-help">Choose your mode before starting. Once started, reload the page to change modes.</p>
+
+      <p id="timer-label">Time until your next water break (minutes:seconds)</p>
+      <p id="timer" role="timer" aria-labelledby="timer-label">30:00</p>
+
+      <button id="start-button" type="button">Start</button>
+
+      <p id="reminder" role="alert" hidden>Time for a water break!</p>
+    </section>
+
+    <section aria-labelledby="water-heading">
+      <h2 id="water-heading">Water recorded</h2>
+      <p id="water-counter" aria-live="polite" aria-atomic="true">0 glasses</p>
+      <button id="water-button" type="button" disabled>I Drank Water</button>
+    </section>
+  </main>
+</body>
+</html>

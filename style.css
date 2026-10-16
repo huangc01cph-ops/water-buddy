@@ -1,0 +1,183 @@
+/* Shared colors and sizing */
+:root {
+  color-scheme: light;
+  --soft-green: #EAF5EE;
+  --water-blue: #3298C7;
+  --leaf-green: #377A59;
+  --dark-teal: #173B35;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Keep hidden content hidden, regardless of other display rules. */
+[hidden] {
+  display: none !important;
+}
+
+/* Page layout and typography */
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: var(--soft-green);
+  color: var(--dark-teal);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+header,
+main {
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+header {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  color: var(--leaf-green);
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+header p {
+  margin: 10px 0 0;
+  font-size: 1.1rem;
+}
+
+main {
+  display: grid;
+  gap: 20px;
+}
+
+/* Simple white cards */
+section {
+  min-width: 0;
+  padding: 30px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  box-shadow: 0 6px 24px rgb(23 59 53 / 7%);
+  text-align: center;
+}
+
+h2 {
+  margin: 0 0 20px;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+/* Mode selector and shared controls */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 650;
+  text-align: left;
+}
+
+select,
+button {
+  min-height: 48px;
+  border-radius: 10px;
+  font: inherit;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--leaf-green);
+  background: #FFFFFF;
+  color: var(--dark-teal);
+}
+
+#mode-help {
+  margin: 10px 0 24px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+button {
+  width: 100%;
+  padding: 12px 20px;
+  border: 2px solid var(--leaf-green);
+  background: var(--leaf-green);
+  color: #FFFFFF;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--dark-teal);
+  background: var(--dark-teal);
+}
+
+button:disabled,
+select:disabled {
+  border: 2px dashed var(--leaf-green);
+  background: var(--soft-green);
+  color: var(--dark-teal);
+  cursor: not-allowed;
+}
+
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--dark-teal);
+  outline-offset: 4px;
+}
+
+/* Countdown: the largest element on the page */
+#timer-label {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+#timer {
+  margin: 10px 0 26px;
+  padding-bottom: 14px;
+  border-bottom: 4px solid var(--water-blue);
+  font-size: clamp(3.5rem, 15vw, 6rem);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+}
+
+/* Water count and future reminder appearance */
+#water-counter {
+  margin: 0 0 20px;
+  color: var(--leaf-green);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+#reminder {
+  margin: 20px 0 0;
+  padding: 14px;
+  border-left: 4px solid var(--water-blue);
+  border-radius: 8px;
+  background: var(--soft-green);
+  font-weight: 650;
+}
+
+/* Comfortable spacing on phones */
+@media (max-width: 480px) {
+  body {
+    padding: 24px 14px;
+  }
+
+  header {
+    margin-bottom: 20px;
+  }
+
+  section {
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+}
