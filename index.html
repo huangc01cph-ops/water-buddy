@@ -1,51 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Water Buddy</title>
+  <meta name="theme-color" content="#0d2028">
+  <meta name="description" content="A little care throughout your day. Water Buddy reminds you to take a sip while you work or study.">
+  <title>Water Buddy · v3.1</title>
+  <script src="theme.js"></script>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <header>
-    <h1>Water Buddy</h1>
-    <p>Stay Focused. Stay Hydrated</p>
-  </header>
-
-  <main>
-    <section aria-labelledby="timer-heading">
-      <h2 id="timer-heading">Water break timer</h2>
-
-      <label for="mode">Choose a mode</label>
-      <select id="mode" name="mode" aria-describedby="mode-help">
-        <option value="minutes15">15 minutes</option>
-        <option value="normal" selected>30 minutes</option>
-        <option value="minutes45">45 minutes</option>
-        <option value="minutes60">60 minutes</option>
-        <option value="demo">Demo Mode — 10 seconds</option>
-      </select>
-      <p id="mode-help">Choose your mode before starting. Click Stop to reset the timer and change modes.</p>
-
-      <p id="timer-label">Time until your next water break (minutes:seconds)</p>
-      <p id="timer" role="timer" aria-labelledby="timer-label">30:00</p>
-
-      <div class="timer-controls">
-        <button id="start-button" type="button">Start</button>
-        <button id="pause-button" type="button" disabled>Pause</button>
+  <div class="revision-bar"><span><i></i> WATER BUDDY <b>/</b> v3.1 <b>/</b> MIDNIGHT TEAL</span><a href="../v3/index.html">Earlier V3 exploration ↗</a></div>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="./index.html" aria-label="Water Buddy home"><img src="assets/water-buddy-logo.png" alt=""><span>water buddy<small>A LITTLE CARE, THROUGHOUT YOUR DAY.</small></span></a>
+      <span class="session-badge"><i></i> Your hydration space</span>
+      <div class="preferences-wrap">
+        <button id="preferences-button" class="outline" type="button" aria-expanded="false" aria-controls="preferences-panel">Preferences <span aria-hidden="true">⚙</span></button>
+        <section id="preferences-panel" class="preferences-panel" aria-labelledby="preferences-heading" hidden>
+          <div class="panel-heading"><h2 id="preferences-heading">Preferences</h2><button id="close-preferences" class="icon-button" type="button" aria-label="Close preferences">×</button></div>
+          <fieldset class="theme-picker"><legend>Appearance</legend><div class="theme-options"><label><input type="radio" name="theme" value="light" aria-label="Light"><span>Light</span></label><label><input type="radio" name="theme" value="dark" aria-label="Dark" checked><span>Dark</span></label><label><input type="radio" name="theme" value="system" aria-label="System"><span>System</span></label></div></fieldset>
+          <p id="theme-status" class="helper" role="status">Theme saved on this device.</p>
+          <div class="preference-section"><label for="goal">Personal session goal</label><select id="goal"><option value="4">4 glasses</option><option value="6">6 glasses</option><option value="8" selected>8 glasses</option><option value="10">10 glasses</option></select><p class="helper">Your own goal, not a hydration recommendation.</p></div>
+          <div class="preference-section"><h3>Desktop reminders</h3><button id="notification-button" class="outline" type="button" aria-pressed="false" aria-describedby="notification-status">Enable Desktop Notifications</button><p id="notification-status" class="helper" role="status">Desktop notifications are disabled.</p></div>
+          <p class="session-note">Water and activity reset on reload. Only your theme is remembered.</p>
+        </section>
       </div>
-
-      <button id="notification-button" type="button" aria-pressed="false" aria-describedby="notification-status">Enable Desktop Notifications</button>
-      <p id="notification-status" role="status">Desktop notifications are disabled.</p>
-
-      <p id="reminder" role="alert" hidden>Time for a water break!</p>
-    </section>
-
-    <section aria-labelledby="water-heading">
-      <h2 id="water-heading">Water recorded</h2>
-      <p id="water-counter" aria-live="polite" aria-atomic="true">0 glasses</p>
-      <button id="water-button" type="button" disabled>I Drank Water</button>
-    </section>
-  </main>
+    </header>
+    <main>
+      <div class="intro"><div><p class="eyebrow">MAKE ROOM FOR A LITTLE RESET</p><h1>Good work starts<br>with feeling good<span>.</span></h1><p class="intro-copy">Find your flow. We’ll remind you to take a sip.</p></div><div class="intro-note" aria-hidden="true"><span>✳</span><p>Small sips.<br>A better rhythm.</p></div></div>
+      <div class="workspace">
+        <section class="timer-card card" aria-labelledby="timer-heading">
+          <div class="card-heading"><h2 id="timer-heading"><span aria-hidden="true">◷</span> Your next water break</h2><span id="state-pill" class="pill">Ready when you are</span></div>
+          <div class="timer-face"><svg class="timer-ring" viewBox="0 0 320 320" aria-hidden="true"><circle class="ring-track" cx="160" cy="160" r="145"/><circle id="ring-progress" cx="160" cy="160" r="145"/></svg><div class="timer-center"><p id="timer-label" class="eyebrow">A MOMENT TO RECHARGE IN</p><p id="timer" role="timer" aria-labelledby="timer-label">30:00</p><p id="timer-footnote">Settle in. Your buddy’s got the time.</p></div><span class="ring-spark" aria-hidden="true">✦</span></div>
+          <div class="interval-row"><label for="mode">Remind me every</label><select id="mode" aria-describedby="mode-help"><option value="minutes15">15 minutes</option><option value="normal" selected>30 minutes</option><option value="minutes45">45 minutes</option><option value="minutes60">60 minutes</option><option value="demo">Demo · 10 seconds</option></select></div>
+          <p id="mode-help" class="helper centered">Stop the timer to change your interval.</p>
+          <div class="timer-controls"><button id="start-button" class="start-button" type="button">Start</button><button id="pause-button" class="pause-button" type="button" disabled>Pause</button></div>
+          <p id="reminder" class="reminder" role="alert" hidden>Time for a water break! Take a sip, then record your glass.</p>
+          <p class="timer-bottom"><i></i><span id="session-caption">A gentler rhythm for work and study.</span></p>
+        </section>
+        <section class="water-card card" aria-labelledby="water-heading">
+          <div class="card-heading"><h2 id="water-heading">Every sip counts</h2><span class="pill">This session</span></div>
+          <div class="water-layout">
+            <div id="cup-progress" class="cup-progress" role="progressbar" aria-label="Personal session hydration progress" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" aria-valuetext="0 of 8 glasses">
+              <svg viewBox="0 0 235 290" aria-hidden="true"><defs><clipPath id="cup-clip"><path d="M26 43 L39 241 Q90 263 141 241 L154 43 Z"/></clipPath><linearGradient id="water-gradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c7efdc"/><stop offset="1" stop-color="#91cbbb"/></linearGradient></defs><path class="glass-body" d="M26 43 L39 241 Q90 263 141 241 L154 43 Z"/><g clip-path="url(#cup-clip)"><rect id="cup-water" x="20" y="246" width="140" height="0" fill="url(#water-gradient)"/><ellipse id="water-surface" cx="90" cy="246" rx="69" ry="5" fill="#d8f6e6" hidden/></g><path class="glass-outline" d="M26 43 L39 241 Q90 263 141 241 L154 43"/><ellipse class="glass-outline" cx="90" cy="43" rx="64" ry="11"/><path class="glass-shine" d="M40 65 L49 224"/><g id="cup-ticks"></g><g id="cup-level-marker" hidden><circle id="cup-level-dot" cx="151" cy="246" r="3.5" fill="#d8f6e6"/><path id="cup-level-line" d="M154 246 H183"/><text id="cup-level-label" x="193" y="250">0/8</text></g></svg>
+            </div>
+            <div class="water-actions"><p id="water-counter" aria-live="polite" aria-atomic="true">0 glasses</p><p class="goal-copy">of <span id="goal-label">8</span> in your personal goal</p><button id="water-button" class="water-button" type="button" disabled><span aria-hidden="true">＋</span> I drank water</button><p id="water-helper" class="helper">Start your timer to record a glass.</p></div>
+          </div>
+        </section>
+        <section class="activity-card card" aria-labelledby="activity-heading"><div class="card-heading"><h2 id="activity-heading">Your little wins</h2><span class="eyebrow">SESSION ACTIVITY</span></div><div id="activity-empty"><span class="empty-icon" aria-hidden="true">↗</span><div><strong>A fresh start looks good on you.</strong><p>Your water breaks will appear here. One sip at a time.</p></div></div><ol id="activity-list" aria-label="Recorded glasses" hidden></ol><p id="activity-announcement" class="sr-only" role="status"></p></section>
+        <aside class="tip-card"><span aria-hidden="true">✳</span><div><p class="eyebrow">THE LITTLE THINGS ADD UP</p><h2>Keep water within reach.</h2><p>A glass on your desk makes your next water break one small step away.</p></div></aside>
+      </div>
+    </main>
+    <footer><span>Stay focused. Stay hydrated.</span><span>Made for your everyday flow ↗</span></footer>
+  </div>
 </body>
 </html>

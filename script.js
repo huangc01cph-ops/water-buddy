@@ -1,5 +1,7 @@
 "use strict";
 
+let viewReady = false;
+
 const modeSelector = document.getElementById("mode");
 const timerDisplay = document.getElementById("timer");
 const startButton = document.getElementById("start-button");
@@ -49,7 +51,7 @@ notificationButton.addEventListener("click", async () => {
       permissionRequested = true;
       permissionRequestPending = true;
       notificationButton.disabled = true;
-      updateNotificationControl("Waiting for Chrome notification permission.");
+      updateNotificationControl("Waiting for browser notification permission.");
       // Request directly from this click, never on page load or expiration.
       permission = await Notification.requestPermission();
     }
@@ -111,6 +113,7 @@ function displayTime(totalSeconds) {
   const seconds = totalSeconds % 60;
   timerDisplay.textContent =
     `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  syncView();
 }
 
 // Recalculate from the deadline so delayed callbacks do not add timer drift.
@@ -143,6 +146,7 @@ function updateControls() {
   pauseButton.textContent = timerState === "paused" ? "Resume" : "Pause";
   pauseButton.disabled = timerState !== "running" && timerState !== "paused";
   waterButton.disabled = timerState !== "running" && timerState !== "expired";
+  syncView();
 }
 
 // Start, Resume, and water recording share one interval setup.
@@ -227,5 +231,119 @@ updateNotificationControl("Desktop notifications are disabled.");
 if (!("Notification" in window) || !window.isSecureContext) {
   notificationsUnavailable("Desktop notifications are unavailable. On-page reminders still work.");
 } else if (Notification.permission === "denied") {
-  notificationsUnavailable("Desktop notifications are unavailable: Chrome permission is blocked. On-page reminders still work.");
+  notificationsUnavailable("Desktop notifications are unavailable: browser permission is blocked. On-page reminders still work.");
 }
+
+// Update the presentation explicitly when the timer or water count changes.
+const goalControl = document.getElementById("goal");
+const svgNamespace = "http://www.w3.org/2000/svg";
+let renderedGoal = null;
+let lastRecordedCount = 0;
+
+function svgElement(tag, attributes) {
+  const element = document.createElementNS(svgNamespace, tag);
+  for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, String(value));
+  return element;
+}
+
+function syncView() {
+  if (!viewReady) return;
+  const goal = Number(goalControl.value);
+  const fraction = Math.min(glassesRecorded / goal, 1);
+  const levelY = 246 - 196 * fraction;
+  document.getElementById("goal-label").textContent = goal;
+  const water = document.getElementById("cup-water");
+  water.setAttribute("y", levelY);
+  water.setAttribute("height", 196 * fraction);
+  const surface = document.getElementById("water-surface");
+  surface.setAttribute("cy", levelY);
+  surface.toggleAttribute("hidden", glassesRecorded === 0);
+  const progress = document.getElementById("cup-progress");
+  progress.setAttribute("aria-valuemax", goal);
+  progress.setAttribute("aria-valuenow", Math.min(glassesRecorded, goal));
+  progress.setAttribute("aria-valuetext", `${glassesRecorded} of ${goal} glasses${glassesRecorded >= goal ? "; personal goal reached" : ""}`);
+  const ticks = document.getElementById("cup-ticks");
+  if (renderedGoal !== goal) {
+    ticks.replaceChildren();
+    for (let number = 1; number <= goal; number++) {
+      const y = 246 - 196 * number / goal;
+      const tick = svgElement("line", { x1: 170, x2: 181, y1: y, y2: y, class: "cup-tick", "data-level": number });
+      const label = svgElement("text", { x: 194, y: y + 4, class: "cup-tick-label", "data-level": number });
+      label.textContent = number;
+      ticks.append(tick, label);
+    }
+    renderedGoal = goal;
+  }
+  for (const tick of ticks.children) tick.classList.toggle("current", Number(tick.dataset.level) === Math.min(glassesRecorded, goal));
+  document.getElementById("cup-level-marker").toggleAttribute("hidden", glassesRecorded === 0);
+  document.getElementById("cup-level-dot").setAttribute("cy", levelY);
+  document.getElementById("cup-level-line").setAttribute("d", `M154 ${levelY} H183`);
+  document.getElementById("cup-level-label").setAttribute("y", levelY + 4);
+  document.getElementById("cup-level-label").textContent = `${Math.min(glassesRecorded, goal)}/${goal}`;
+  const idle = timerState === "idle";
+  const paused = timerState === "paused";
+  const expired = timerState === "expired";
+  document.getElementById("state-pill").textContent = idle ? "Ready when you are" : paused ? "Taking a pause" : expired ? "Time for a sip" : "In your flow";
+  document.getElementById("timer-footnote").textContent = paused ? "Take your time. We’ll be here." : expired ? "A little reset. You’ve earned it." : "Settle in. Your buddy’s got the time.";
+  document.getElementById("session-caption").textContent = idle ? "A gentler rhythm for work and study." : paused ? "Paused. Resume whenever you’re ready." : expired ? "Record a glass to begin your next interval." : "Keep this page open for your reminder.";
+  document.getElementById("water-helper").textContent = idle ? "Start your timer to record a glass." : paused ? "Resume your timer to record a glass." : glassesRecorded >= goal ? "Personal goal reached. Every sip still counts." : "One click. One level.";
+  const [minutes, seconds] = timerDisplay.textContent.split(":").map(Number);
+  const remaining = (minutes * 60 + seconds) / modeDurations[modeSelector.value];
+  document.getElementById("ring-progress").style.strokeDashoffset = String(911.062 * (1 - Math.max(0, Math.min(1, remaining))));
+  if (glassesRecorded > lastRecordedCount) {
+    const now = new Date();
+    const row = document.createElement("li");
+    const label = document.createElement("span");
+    label.textContent = `✓ Glass ${glassesRecorded} recorded`;
+    const time = document.createElement("time");
+    time.dateTime = now.toISOString();
+    time.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    row.append(label, time);
+    const list = document.getElementById("activity-list");
+    list.prepend(row);
+    while (list.children.length > 50) list.lastElementChild.remove();
+    list.hidden = false;
+    document.getElementById("activity-empty").hidden = true;
+    document.getElementById("activity-announcement").textContent = `Glass ${glassesRecorded} recorded.${glassesRecorded === goal ? " Personal goal reached." : ""}`;
+  }
+  lastRecordedCount = glassesRecorded;
+}
+
+const preferencesButton = document.getElementById("preferences-button");
+const preferencesPanel = document.getElementById("preferences-panel");
+function closePreferences(restoreFocus = false) {
+  preferencesPanel.hidden = true;
+  preferencesButton.setAttribute("aria-expanded", "false");
+  if (restoreFocus) preferencesButton.focus();
+}
+preferencesButton.addEventListener("click", () => {
+  const open = preferencesPanel.hidden;
+  preferencesPanel.hidden = !open;
+  preferencesButton.setAttribute("aria-expanded", String(open));
+  if (open) document.getElementById("close-preferences").focus();
+});
+document.getElementById("close-preferences").addEventListener("click", () => closePreferences(true));
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !preferencesPanel.hidden) closePreferences(true);
+});
+document.addEventListener("click", event => {
+  if (!preferencesPanel.hidden && !event.target.closest(".preferences-wrap")) closePreferences();
+});
+document.addEventListener("focusin", event => {
+  if (!preferencesPanel.hidden && !event.target.closest(".preferences-wrap")) closePreferences();
+});
+function syncThemeChoice() {
+  for (const radio of document.querySelectorAll('input[name="theme"]')) radio.checked = radio.value === window.waterBuddyTheme.choice;
+  document.getElementById("theme-status").textContent = window.waterBuddyTheme.saved ? "Theme saved on this device." : "Theme applies now. Choose a theme to remember it.";
+}
+for (const radio of document.querySelectorAll('input[name="theme"]')) {
+  radio.addEventListener("change", () => {
+    window.waterBuddyTheme.set(radio.value);
+    syncThemeChoice();
+    if (!window.waterBuddyTheme.saved) document.getElementById("theme-status").textContent = "Theme applies for this visit. Browser storage is unavailable.";
+  });
+}
+goalControl.addEventListener("change", syncView);
+viewReady = true;
+syncThemeChoice();
+syncView();

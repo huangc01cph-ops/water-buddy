@@ -1,64 +1,43 @@
-# Water Buddy
+# Water Buddy v3.1
 
-**Stay Focused. Stay Hydrated.**
+Implementation of the selected **v3b measured-progress layout** and **v3d Midnight Teal theme**, with the requested light-red Pause and dark-red Stop controls.
 
-Water Buddy is a simple browser app that reminds people to take water breaks while they work or study. It combines a countdown timer with a count of glasses recorded during the current session.
+## Open
 
-## Features
+Open `index.html` directly in a browser. All app assets are inside this folder; there is no installation or build step. The header's earlier-V3 link is an optional link to the sibling historical version.
 
-- Choose a 15-, 30-, 45-, or 60-minute water break interval.
-- Use the 10-second Demo Mode to demonstrate the app quickly.
-- Start, pause, resume, or stop the countdown.
-- See an on-page reminder when it is time for a water break.
-- Optionally enable desktop notifications with browser permission.
-- Record a glass of water and automatically start the next countdown.
-- Use a layout that adapts to phones and larger screens, with labeled controls, visible keyboard focus, and accessible status messages.
+For an HTTP preview, run `node v3.1/preview-server.cjs` from the project root and visit <http://127.0.0.1:4175/v3.1/>. Stop it with Ctrl+C when finished. The server serves this project folder on the local loopback address only.
 
-## Run locally
+## Use
 
-1. Download this repository. On GitHub, choose **Code > Download ZIP**, then extract the ZIP file.
-2. Keep `index.html`, `style.css`, and `script.js` together in the same folder.
-3. Open `index.html` in a web browser.
+1. Choose a reminder interval, or **Demo · 10 seconds**.
+2. Click **Start**. Pause / Resume and Stop work as before.
+3. Click **I drank water** while the timer is running or a reminder is due. Each accepted click records one glass, fills one step of the cup, adds an activity entry, and starts the next interval.
+4. Open **Preferences** for **Light / Dark / System**, a personal session goal, and optional desktop notifications. Escape closes Preferences and returns focus to its button.
 
-No installation, account, API key, or build step is required. Desktop notification availability depends on browser support, permission, and a secure context; use the HTTPS GitHub Pages site when demonstrating notifications. On-page reminders still work when desktop notifications are unavailable.
+Midnight Teal is the first-visit default. A chosen theme is remembered in this browser when storage is available. System follows operating-system appearance changes. Switching themes does not reset the timer or water count. Theme storage failure falls back to a working setting for the current visit.
 
-## Quick demonstration
+At the example goal of eight, each glass adds 12.5 percentage points to the cup. Changing the personal goal recalculates its fill and level markings. At or beyond the goal the cup stays full, while the actual glass count continues. The goal is a personal setting, not a hydration recommendation.
 
-1. Select **Demo Mode — 10 seconds**.
-2. Click **Start** and watch the countdown.
-3. Optionally click **Pause**, then **Resume**.
-4. When the countdown reaches zero, the message **Time for a water break!** appears.
-5. Click **I Drank Water**. The glass count increases and a new countdown begins.
-6. Click **Stop** to reset the timer and choose a different interval. The current glass count is preserved until the page is refreshed or closed.
+Timer, water count, session goal, and activity reset on reload. **Only the theme is saved.** Keep the page open; sleeping devices and browser suspension can delay a reminder. Desktop notifications require browser support, a secure context and permission; on-page reminders work without desktop notification access.
 
-To demonstrate desktop notifications, click **Enable Desktop Notifications** and allow notifications before the timer expires. Notifications are silent and delivery also depends on browser and operating system settings.
+## Validation
 
-## Project files
+- `node --test v3.1/test.cjs`: eight deterministic behavior tests passed, covering fill increments, goal changes, over-goal counts, pause/resume/stop, overdue countdowns, theme persistence, System changes, blocked storage, and Preferences dismissal.
+- Browser review at **390px** and **1280px**: no horizontal page overflow; phone and desktop layouts visually reviewed.
+- Browser checks: three recordings produced a 3/8 cup, theme switching retained recorded water, Light persisted after reload, Dark could be restored, and runtime error/warning logs were empty.
+- Button colors verified in the browser: Stop `#8b2334`, Pause `#f2b4b9`.
+- Screenshots in `previews/`: desktop dark, desktop dark with Preferences, desktop light, phone dark. Recorded glasses in these screenshots are demonstration interactions.
+- Desktop notification delivery was not exercised; its existing permission and delivery handling is retained.
 
-| File | Purpose |
-| --- | --- |
-| `index.html` | Page structure, labels, and controls |
-| `style.css` | Colors, responsive layout, and control styling |
-| `script.js` | Countdown, pause/resume, water counter, and optional notifications |
-| `README.md` | Project overview and instructions |
+## Files
 
-## Built with
+- `index.html`: responsive page structure and inline vector cup.
+- `style.css`: light and dark themes, responsive layout, red timer controls.
+- `theme.js`: early theme selection, browser storage, system theme updates.
+- `script.js`: copied original timer/notification behavior with explicit v3.1 presentation updates.
+- `assets/`: local branding asset.
+- `test.cjs`: dependency-free behavior checks, with a simulated clock and minimal DOM fixture; these do not replace browser layout checks.
+- `CHANGELOG.md`: implementation record and decisions.
 
-HTML, CSS, and vanilla JavaScript using browser APIs. The app has no external libraries or backend service.
-
-## Current limitations
-
-- The timer and glass count reset when the page is refreshed or closed; progress is not saved.
-- Keep the page open during use. Browser suspension or a sleeping device can delay reminders; the countdown updates when the page becomes active again.
-- Each click records one glass, without measuring its volume or setting a daily hydration target.
-- Desktop notifications must be enabled again after reloading the page.
-
-## Publish with GitHub Pages
-
-1. Upload the four project files to the top level of a public GitHub repository.
-2. Open the repository's **Settings > Pages**.
-3. Under **Build and deployment**, select **Deploy from a branch**.
-4. Select the branch containing the files (usually `main`), choose **/(root)**, and click **Save**.
-5. Wait for deployment, then copy the published website link shown in Pages settings.
-
-The repository link lets reviewers read the code; the GitHub Pages link lets them use the app in their browser.
+Previous versions and mockup images are preserved.
