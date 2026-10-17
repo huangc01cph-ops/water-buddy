@@ -19,15 +19,24 @@
 
       <label for="mode">Choose a mode</label>
       <select id="mode" name="mode" aria-describedby="mode-help">
-        <option value="normal" selected>Normal Mode — 30 minutes</option>
+        <option value="minutes15">15 minutes</option>
+        <option value="normal" selected>30 minutes</option>
+        <option value="minutes45">45 minutes</option>
+        <option value="minutes60">60 minutes</option>
         <option value="demo">Demo Mode — 10 seconds</option>
       </select>
-      <p id="mode-help">Choose your mode before starting. Once started, reload the page to change modes.</p>
+      <p id="mode-help">Choose your mode before starting. Click Stop to reset the timer and change modes.</p>
 
       <p id="timer-label">Time until your next water break (minutes:seconds)</p>
       <p id="timer" role="timer" aria-labelledby="timer-label">30:00</p>
 
-      <button id="start-button" type="button">Start</button>
+      <div class="timer-controls">
+        <button id="start-button" type="button">Start</button>
+        <button id="pause-button" type="button" disabled>Pause</button>
+      </div>
+
+      <button id="notification-button" type="button" aria-pressed="false" aria-describedby="notification-status">Enable Desktop Notifications</button>
+      <p id="notification-status" role="status">Desktop notifications are disabled.</p>
 
       <p id="reminder" role="alert" hidden>Time for a water break!</p>
     </section>

@@ -106,16 +106,47 @@ select {
 button {
   width: 100%;
   padding: 12px 20px;
-  border: 2px solid var(--leaf-green);
-  background: var(--leaf-green);
-  color: #FFFFFF;
+  border: 2px solid var(--button-background, var(--leaf-green));
+  background: var(--button-background, var(--leaf-green));
+  color: var(--button-text, #FFFFFF);
   font-weight: 700;
   cursor: pointer;
+}
+
+.timer-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#notification-button {
+  margin-top: 16px;
+}
+
+#notification-status {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+#start-button[data-action="stop"] {
+  --button-background: #8B1E2D;
+}
+
+#pause-button {
+  --button-background: #F4A6A6;
+  --button-text: #442020;
+}
+
+#water-button {
+  --button-background: var(--water-blue);
+  /* Large bold text keeps white lettering readable on the requested blue. */
+  font-size: 1.2rem;
 }
 
 button:hover:not(:disabled) {
   border-color: var(--dark-teal);
   background: var(--dark-teal);
+  color: #FFFFFF;
 }
 
 button:disabled,
